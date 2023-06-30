@@ -34,25 +34,32 @@ class AlienInvasion:
             # controlling frame rate of the game
             self.clock.tick(60)
 
+    def _check_keydown_events(self, event):
+        if event.key == pygame.K_RIGHT:
+            # Move the ship to the right.
+            self.ship.moving_right = True
+        if event.key == pygame.K_LEFT:
+            # Move the ship to the right.
+            self.ship.moving_left = True
+    def _check_keyup_events(self,event):
+        if event.key == pygame.K_RIGHT:
+            # Move the ship to the right.
+            self.ship.moving_right = False
+        if event.key == pygame.K_LEFT:
+            # Move the ship to the right.
+            self.ship.moving_left = False
+
     def _check_events(self):
         """ Respond to keypresses and mouse events. """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT:
-                    # Move the ship to the right.
-                    self.ship.moving_right = True
-                if event.key == pygame.K_LEFT:
-                    # Move the ship to the right.
-                    self.ship.moving_left = True
+                self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_RIGHT:
-                    # Move the ship to the right.
-                    self.ship.moving_right = False
-                if event.key == pygame.K_LEFT:
-                    # Move the ship to the right.
-                    self.ship.moving_left = False
+                self._check_keyup_events(event)
+
+
     def _update_screen(self):
         """ Update images on the screen, and flip to the new screen. """
         self.screen.fill(self.settings.bg_color)
