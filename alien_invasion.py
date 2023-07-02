@@ -40,11 +40,12 @@ class AlienInvasion:
         while True:
             # Watch for keyboard and mouse events.
             self._check_events()
-            self.ship.update()
-            self._update_bullets()
-            self._update_aliens()
-            self._update_screen()
+            if self.game_active:
+                self.ship.update()
+                self._update_bullets()
+                self._update_aliens()
             
+            self._update_screen()
             # controlling frame rate of the game
             self.clock.tick(self.settings.fps)
 
@@ -172,7 +173,7 @@ class AlienInvasion:
             sleep(0.5)
         else:
             self.game_active = False
-            
+
     def _update_screen(self):
         """ Update images on the screen, and flip to the new screen. """
         self.screen.fill(self.settings.bg_color)
