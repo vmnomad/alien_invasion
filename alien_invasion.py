@@ -2,6 +2,7 @@ import sys
 import pygame
 from settings import Settings
 from ship import Ship
+from bullet import Bullet
 
 import time
 
@@ -21,7 +22,7 @@ class AlienInvasion:
         pygame.display.set_caption("Alien Invasion")
 
         self.ship = Ship(self)
-
+        self.bullets = pygame.sprite.Group()
 
     def run_game(self):
         """ Start the main loop for the game. """
@@ -29,10 +30,12 @@ class AlienInvasion:
             # Watch for keyboard and mouse events.
             self._check_events()
             self.ship.update()
+            self._update_bullets()
+
             self._update_screen()
             
             # controlling frame rate of the game
-            self.clock.tick(60)
+            self.clock.tick(self.settings.fps)
 
     def _check_keydown_events(self, event):
         if event.key == pygame.K_RIGHT:
@@ -43,6 +46,8 @@ class AlienInvasion:
             self.ship.moving_left = True
         elif event.key == pygame.K_q:
             sys.exit()
+        elif event.key == pygame.K_SPACE:
+            self._fire_bullet()
 
     def _check_keyup_events(self,event):
         if event.key == pygame.K_RIGHT:
@@ -62,11 +67,29 @@ class AlienInvasion:
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
 
+    def _fire_bullet(self):
+        """ Create a new bullet and add it to bullets group"""
+        new_bullet = Bullet(self)
+        if len(self.bullets) < self.settings.bullets_allowed:
+            self.bullets.add(new_bullet)
+
+    def _update_bullets(self):
+        self.bullets.update()
+
+        # clean the bullets once they reach top of the screen
+        for bullet in self.bullets.copy():
+            if bullet.rect.bottom <=0:
+                self.bullets.remove(bullet)
 
     def _update_screen(self):
         """ Update images on the screen, and flip to the new screen. """
         self.screen.fill(self.settings.bg_color)
+
+        for bullet in self.bullets.sprites():
+            bullet.draw_bullet()
+        
         self.ship.blitme()
+
         pygame.display.flip()
 
 if __name__ == '__main__':
